@@ -2,14 +2,16 @@ var express = require("express");
 
 var app = express();
 
+const PORT = process.env.PORT || 3001;
+
 app.use(express.json());
 
 app.get("/", remmy);
 app.post("/start", start);
 app.post("/move", move);
 app.post("/end", end);
-app.listen(3001);
-console.log("go to http://localhost:3001");
+app.listen(PORT);
+console.log(`go to http://localhost:${PORT}`);
 
 function remmy(req, res) {
   res.status(200).json({
