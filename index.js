@@ -29,8 +29,16 @@ function move(req, res) {
   const { game, turn, board, you } = req.body;
 
   // ONE MOVE AHEAD
-  moves = avoidSnake(moves, you.body, you.head);
-  moves = avoidWalls(moves, board.height, you.head);
+  moves = avoidSnake(moves, you.body, you.head); // Avoiding ME
+  moves = avoidWalls(moves, board.height, you.head); // Avoiding Walls
+
+  // Avoid other snakes
+  const mySnakeId = you.id;
+  board.snakes
+    .filter((snake) => snake.id !== mySnakeId)
+    .forEach((snake) => {
+      moves = avoidSnake(moves, snake.body, you.head); // Avoiding ME
+    });
 
   if (you.health <= 50) {
     moves = toFood(moves, board.food, you.head);

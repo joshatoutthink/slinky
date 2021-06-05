@@ -11,6 +11,8 @@
   },
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node ."
+    "start": "node .",
+    "battlesnake": "battlesnake play --name remmy --url http://localhost:3001 --gametype solo",
+    "double:battlesnake": "battlesnake play --name remmy --url http://localhost:3001 --name remmy2 --url http://localhost:3001"
   }
 }
