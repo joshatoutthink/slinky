@@ -1,3 +1,4 @@
-const { move } = require("./index.js");
+const { move } = require("./move.js");
 const testMove = require("./testMove.json");
-move;
+
+move(testMove);

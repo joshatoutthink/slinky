@@ -1,39 +1,35 @@
 const allMoves = ["left", "up", "right", "down"];
-function move(req, res) {
+
+function move(req) {
   let moves = [...allMoves];
   const { game, turn, board, you } = req.body;
-  console.log(JSON.stringify(req.body, null, 2));
+
   // ONE MOVE AHEAD
   moves = avoidWalls(moves, board.height, you.head); // Avoiding Walls
 
   moves = avoidSnake(moves, you.body, you.head); // Avoiding ME
   // Avoid other snakes
-  const mySnakeId = you.id;
-  board.snakes.forEach((snake) => {
-    moves = avoidSnake(moves, snake.body, you.head); // Avoiding ME
-    moves = avoidSnakeNextMove(moves, snake, you);
-  });
 
-  console.log(moves);
+  const mySnakeId = you.id;
+  board.snakes
+    .filter((snake) => snake.id !== mySnakeId)
+
+    .forEach((snake) => {
+      moves = avoidSnake(moves, snake.body, you.head);
+      moves = avoidSnakeNextMove(moves, snake, you);
+    });
+
   if (you.health <= 50) {
     moves = toFood(moves, board.food, you.head);
   } else {
     // MOVE TOWARDS TAIL
     moves = toTail(moves, you.body[you.body.length - 1], you.head);
   }
-  direction = moves[Math.floor(Math.random() * moves.length)];
-  console.log(direction);
-  res.status(200).json({
-    move: direction,
-  });
-}
 
-function start(_, res) {
-  console.log("GAME STARTING");
-  res.status(200).send("ok");
-}
-function end() {
-  console.log("GAME ENDED \n \n");
+  direction = moves[Math.floor(Math.random() * moves.length)];
+  console.log(moves);
+  console.log(direction);
+  return direction;
 }
 
 //STRATEGY
@@ -66,12 +62,25 @@ function avoidSnakeNextMove(moves, snake, me) {
   if (myLength > snakeLength) return moves; // noop. if Im bigger than move is still safe
 
   const MyAvailable = getMoves(moves, myHead);
-  return Object.keys(MyAvailable).filter((move) => {
-    const { x: myX, y: myY } = MyAvailable[move];
-    return !Object.keys(getMoves(allMoves, snakeHead)).some(
-      (oSMove) => oSMove.x == myX && oSMove.y == myY
-    );
-  });
+  const enemyMovesAvailable = getMoves(allMoves, snakeHead);
+
+  const myMovesLeft = Object.keys(MyAvailable).filter((myMove) => {
+    const { x: myX, y: myY } = MyAvailable[myMove];
+    const enemyMoveDirections = Object.keys(enemyMovesAvailable);
+
+    const sameDirection = enemyMoveDirections.find((enemyDir) => {
+      const { x: snakeX, y: snakeY } = enemyMovesAvailable[enemyDir];
+      return snakeX == myX && snakeY == myY;
+    });
+
+    if (sameDirection) {
+      return false;
+    } else {
+      return true;
+    }
+  }); //filtering myMoves
+
+  return myMovesLeft;
 }
 
 function toTail(moves, myTail, myHead) {
@@ -107,7 +116,6 @@ function toFood(moves, food, head) {
       available[move].x == moveCoordsToFood.x &&
       available[move].y == moveCoordsToFood.y
   );
-  console.log(move);
   return [move];
 }
 
