@@ -1,163 +1,68 @@
-const allMoves = ["left", "up", "right", "down"];
+const { createGrid, keys } = require("./grid");
+const {
+  smallSnakesNear,
+  avoidLargeSnakes,
+  largeSnakeAround,
+  hunt,
+} = require("./otherSnakes");
+const { eat } = require("./food");
+const { moveAroundPerimeter } = require("./areaControl");
 
 function move(req) {
-  let moves = [...allMoves];
   const { game, turn, board, you } = req.body;
+  const grid = createGrid(req.body);
 
-  // ONE MOVE AHEAD
-  moves = avoidWalls(moves, board.height, you.head); // Avoiding Walls
+  const availableMoves = {};
 
-  moves = avoidSnake(moves, you.body, you.head); // Avoiding ME
-  // Avoid other snakes
-
-  const mySnakeId = you.id;
-  board.snakes
-    .filter((snake) => snake.id !== mySnakeId)
-
-    .forEach((snake) => {
-      moves = avoidSnake(moves, snake.body, you.head);
-      moves = avoidSnakeNextMove(moves, snake, you);
-    });
-
-  if (you.health <= 50) {
-    moves = toFood(moves, board.food, you.head);
-  } else {
-    // MOVE TOWARDS TAIL
-    moves = toTail(moves, you.body[you.body.length - 1], you.head);
+  // check if need food
+  if (you.health < 30) {
+    const moveToEat = eat({ grid, data: req.body, urgent: true }); // ea. {direction:UP, score: 1}
+    availableMoves[moveToEat.direction] = moveToEat.score;
   }
 
-  direction = moves[Math.floor(Math.random() * moves.length)];
-  console.log(moves);
-  console.log(direction);
+  // check if any snakes can be eaten close by
+  if (smallSnakesNear(grid, req.body)) {
+    const moveToHunt = hunt(grid, req.body); // ea. {direction:UP, score: 1}
+    if (!availableMoves[moveToHunt.direction]) {
+      availableMoves[moveToHunt.direction] = 0;
+    }
+    availableMoves[moveToHunt.direction] += moveToHunt.score;
+  }
+
+  // check if should be bulking up
+  if (you.length < 6) {
+    const moveToEat = eat({ grid, data: req.body, urgent: true }); // ea. {direction:UP, score: 1}
+    if (!availableMoves[moveToEat.direction]) {
+      availableMoves[moveToEat.direction] = 0;
+    }
+    availableMoves[moveToEat.direction] += moveToEat.score;
+  }
+
+  //todo // check if easy to eat / trap snake
+
+  // check for large snakes in area
+  if (largeSnakeAround(grid, req.body)) {
+    const moveToAvoid = avoidLargeSnakes(grid, req.body);
+    if (!availableMoves[moveToAvoid.direction]) {
+      availableMoves[moveToAvoid.direction] = 0;
+    }
+    availableMoves[moveToAvoid.direction] += moveToEat.score;
+  }
+
+  // circle arena 2 in
+  {
+    const moveToPerimeter = moveAroundPerimeter(grid, req.body, 2);
+    if (!availableMoves[moveToPerimeter.direction]) {
+      availableMoves[moveToPerimeter.direction] = 0;
+    }
+    availableMoves[moveToPerimeter.direction] += moveToEat.score;
+  }
+
+  const direction = Object.keys(availableMoves).sort(
+    (a, b) => availableMoves[a] - availableMoves[b]
+  )[0]; // returns highest scored direction
+
   return direction;
 }
 
-//STRATEGY
-
-function avoidWalls(moves, gameSize, myHead) {
-  const available = getMoves(moves, myHead); //{move:[x,y]}
-  return Object.keys(available).filter((move) => {
-    const { x, y } = available[move];
-    return x <= gameSize - 1 && x >= 0 && y <= gameSize - 1 && y >= 0;
-  });
-}
-
-function avoidSnake(moves, parts, myHead) {
-  const available = getMoves(moves, myHead); //{move:[x,y]}
-  return Object.keys(available).filter((move) => {
-    const { x, y } = available[move];
-    if (parts.some((part) => part.x == x && part.y == y)) {
-      return false;
-    }
-    return true;
-  });
-}
-
-function avoidSnakeNextMove(moves, snake, me) {
-  const snakeHead = snake.head;
-  const myHead = me.head;
-  const snakeLength = snake.length;
-  const myLength = me.length;
-
-  if (myLength > snakeLength) return moves; // noop. if Im bigger than move is still safe
-
-  const MyAvailable = getMoves(moves, myHead);
-  const enemyMovesAvailable = getMoves(allMoves, snakeHead);
-
-  const myMovesLeft = Object.keys(MyAvailable).filter((myMove) => {
-    const { x: myX, y: myY } = MyAvailable[myMove];
-    const enemyMoveDirections = Object.keys(enemyMovesAvailable);
-
-    const sameDirection = enemyMoveDirections.find((enemyDir) => {
-      const { x: snakeX, y: snakeY } = enemyMovesAvailable[enemyDir];
-      return snakeX == myX && snakeY == myY;
-    });
-
-    if (sameDirection) {
-      return false;
-    } else {
-      return true;
-    }
-  }); //filtering myMoves
-
-  return myMovesLeft;
-}
-
-function toTail(moves, myTail, myHead) {
-  const available = getMoves(moves, myHead); //{move:[x,y]}
-  if (!available || !Object.keys(available).length) return [];
-  return [
-    Object.keys(available).reduce((current, { x, y }) => {
-      const currentYDistance = getDistanceBetween(myTail.y, current.y);
-      const currentXDistance = getDistanceBetween(myTail.x, current.x);
-
-      const yDistance = getDistanceBetween(myTail.y, y);
-      const xDistance = getDistanceBetween(myTail.x, x);
-      const totalCurrent = currentYDistance + currentXDistance;
-      const totalMove = xDistance + yDistance;
-
-      if (totalCurrent - totalMove > 0) {
-        return { x, y };
-      }
-      return current;
-    }),
-  ];
-}
-
-function toFood(moves, food, head) {
-  const available = getMoves(moves, head); //{move:[x,y]}
-  const closestFood = sortByClosest(head, food)[0];
-  const moveCoordsToFood = sortByClosest(
-    closestFood,
-    Object.values(available)
-  )[0];
-  const move = Object.keys(available).find(
-    (move) =>
-      available[move].x == moveCoordsToFood.x &&
-      available[move].y == moveCoordsToFood.y
-  );
-  return [move];
-}
-
-//HELPERS
-
-function getMoves(moves, coord) {
-  return moves.reduce((coords, move) => {
-    coords[move] = GO[move.toUpperCase()](coord);
-    return coords;
-  }, {});
-}
-
-const GO = {
-  LEFT: function LEFT({ x, y }) {
-    return { x: x - 1, y };
-  },
-  UP: function UP({ x, y }) {
-    return { x, y: y + 1 };
-  },
-  RIGHT: function RIGHT({ x, y }) {
-    return { x: x + 1, y };
-  },
-  DOWN: function DOWN({ x, y }) {
-    return { x, y: y - 1 };
-  },
-};
-
-function getDistanceBetween(a, b) {
-  return Math.abs(a - b);
-}
-
-function sortByClosest(goTo, coord) {
-  return coord.sort((a, b) => {
-    const aYDistance = getDistanceBetween(goTo.y, a.y);
-    const aXDistance = getDistanceBetween(goTo.x, a.x);
-
-    const bYDistance = getDistanceBetween(goTo.y, b.y);
-    const bXDistance = getDistanceBetween(goTo.x, b.x);
-    const aTotal = aYDistance + aXDistance;
-    const bTotal = bXDistance + bYDistance;
-
-    return aTotal - bTotal;
-  });
-}
 module.exports = { move };
