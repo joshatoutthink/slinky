@@ -101,7 +101,7 @@ class Tree {
 
       // if found target
       if (sameCell(target, lowestCell)) {
-        const coordinates = retracePathToStart(lowestCell, start); //TODO
+        const coordinates = this.retracePathToRoot(lowestCell); //TODO
         return calcDirection(start, coordinates);
       }
 
@@ -120,7 +120,7 @@ class Tree {
 
         // check if found target
         if (sameCell(target, neighbor)) {
-          const coordinates = retracePathToStart(lowestCell, start); //TODO
+          const coordinates = this.retracePathToRoot(neighborCell); //TODO
           return calcDirection(start, coordinates);
         }
 
@@ -144,13 +144,20 @@ class Tree {
           if (shortest) {
             neighborCell.updateScore(
               tempG,
-              getDistanceBetween(neighbor, start)
+              getDistanceBetween(neighbor, target)
             );
             neighborCell.setPrevious(current);
           }
         }
       }
     }
+  }
+
+  retracePathToRoot(cell) {
+    if (sameCell(this.root, cell.previous)) {
+      return cell;
+    }
+    return this.retracePathToRoot(cell.previous);
   }
 }
 
@@ -179,14 +186,22 @@ function sameCell(a, b) {
   return a.x === b.x && a.y === b.y;
 }
 
-console.log(
-  JSON.stringify(
-    new Tree({ x: 0, y: 0 }, [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
-    ]).cells,
-    null,
-    2
-  )
-);
+function calcDirection(from, to) {
+  const x = to.x - from.x;
+  const y = to.y - from.y;
+
+  if (x == -1 && y == 0) {
+    return "left";
+  }
+  if (x == 1 && y == 0) {
+    return "right";
+  }
+  if (x == 0 && y == 1) {
+    return "up";
+  }
+  if (x == 0 && y == -1) {
+    return "down";
+  }
+}
+
+console.log();
