@@ -42,8 +42,6 @@ function createGrid(data) {
 
   //plot food
   plot(grid, food, "FOOD");
-
-  console.log(grid.map((y) => JSON.stringify(y)));
 }
 
 function plot(grid, entity, type, isSnake) {
@@ -72,5 +70,3 @@ module.exports = {
   createGrid,
   keys,
 };
-
-createGrid(require("./testMove.json").body);

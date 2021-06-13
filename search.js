@@ -1,11 +1,8 @@
 const { sortByClosest, getDistanceBetween } = require("./helpers");
 const { keys } = require("./grid");
-module.exports.search = function search(grid, data, targetData, targetKey) {
-  let shortestPath = 9999;
+module.exports.search = function search(grid, data, targetData) {
   const {
     you: { head },
-    board,
-    game,
   } = data;
   const cellTree = new Tree(head, grid);
   let closestTarget = sortByClosest(head, targetData)[0]; // this may need to change if no good path is found
@@ -36,28 +33,24 @@ class Tree {
           neighbors.push({
             x: x - 1,
             y: y,
-            state: grid[y][x - 1],
           });
         }
         if (typeof up !== "undefined") {
           neighbors.push({
             x: x,
             y: y + 1,
-            state: grid[y + 1][x],
           });
         }
         if (typeof right !== "undefined") {
           neighbors.push({
             x: x + 1,
             y: y,
-            state: grid[y][x + 1],
           });
         }
         if (typeof down !== "undefined") {
           neighbors.push({
             x: x,
             y: y - 1,
-            state: grid[y - 1][x],
           });
         }
         this.cells.push(new Cell(x, y, state, neighbors));
@@ -71,37 +64,37 @@ class Tree {
     });
   }
 
-  getCell(sX, sY) {
+  getCell({ x: sX, y: sY }) {
     return this.cells.find(({ x, y }) => {
       return sX == x && sY == y;
     });
   }
 
   getPathsTo(target) {
-    const start = this.getRootCell();
+    const start = this.root;
     let current = start;
 
-    const cellsToCheck = [current];
-    const checkedCells = [];
+    let cellsToCheck = [current];
+    let checkedCells = [];
 
     while (cellsToCheck.length) {
       //set baseline
-      let lowestF = 999;
-      let lowestCell = { x: 99, y: 99 };
+      let lowestF = 999999999;
+      let lowestCell = { x: 99999, y: 99999 };
 
       // check which has the lowest f score.
       cellsToCheck.forEach(({ x, y }) => {
         //this might be done with a reduce
-        const cell = this.getCell(x, y);
+        const cell = this.getCell({ x, y });
+
         if (cell.f < lowestF) {
           lowestF = cell.f;
-          lowestCell = { x, y };
+          lowestCell = { x: cell.x, y: cell.y };
         }
       });
-
       // if found target
       if (sameCell(target, lowestCell)) {
-        const coordinates = this.retracePathToRoot(lowestCell); //TODO
+        const coordinates = this.retracePathToRoot(lowestCell);
         return calcDirection(start, coordinates);
       }
 
@@ -111,7 +104,7 @@ class Tree {
 
       // remove current from cells to check && add to checkedCells
       checkedCells.push(current);
-      cellsToCheck = cellsToCheck.filter((cell) => sameCell(cell, current));
+      cellsToCheck = cellsToCheck.filter((cell) => !sameCell(cell, current));
 
       //using and old fashion for loop so we can break early
       for (let i = 0; i < currentCell.neighbors.length; i++) {
@@ -120,33 +113,33 @@ class Tree {
 
         // check if found target
         if (sameCell(target, neighbor)) {
-          const coordinates = this.retracePathToRoot(neighborCell); //TODO
+          const coordinates = this.retracePathToRoot(current);
           return calcDirection(start, coordinates);
         }
 
         // if neighborCell is a valid space to move to && and we haven't already checked it (its in checked cells)
-        if (
-          neighborCell.state < keys.ENEMY_BODY &&
-          !inArray(checkedCells, neighbor)
-        ) {
-          // update distance traveled
-          const tempG = currentCell.g + 1;
-          let shortest = true;
+        if (neighborCell.state < keys.ENEMY_BODY) {
+          if (!inArray(checkedCells, neighbor)) {
+            // update distance traveled
+            const tempG = currentCell.g + 1;
+            let shortest = true;
 
-          if (inArray(cellsToCheck, neighbor)) {
-            if (tempG > neighborCell.g) {
-              shortest = false;
+            if (inArray(cellsToCheck, neighbor)) {
+              if (tempG > neighborCell.g) {
+                shortest = false;
+              }
+            } else {
+              cellsToCheck.push(neighbor);
             }
-          } else {
-            cellsToCheck.push(neighbor);
-          }
-          // update the cells score
-          if (shortest) {
-            neighborCell.updateScore(
-              tempG,
-              getDistanceBetween(neighbor, target)
-            );
-            neighborCell.setPrevious(current);
+            // update the cells score
+            if (shortest) {
+              const distance =
+                getDistanceBetween(neighbor.x, target.x) +
+                getDistanceBetween(neighbor.y, target.y);
+
+              neighborCell.updateScore(tempG, distance);
+              neighborCell.setPrevious(current);
+            }
           }
         }
       }
@@ -154,10 +147,13 @@ class Tree {
   }
 
   retracePathToRoot(cell) {
-    if (sameCell(this.root, cell.previous)) {
+    const previous = this.getCell(cell).previous;
+    console.log(previous);
+    if (sameCell(this.root, previous)) {
       return cell;
     }
-    return this.retracePathToRoot(cell.previous);
+
+    return this.retracePathToRoot(previous);
   }
 }
 
@@ -204,4 +200,20 @@ function calcDirection(from, to) {
   }
 }
 
-console.log();
+function inArray(array, needle) {
+  return array.includes((item) => item.x == needle.x && item.y == needle.y);
+}
+
+console.log(
+  this.search(
+    [
+      [2, 0, 0, 0, 0],
+      [10, 0, 0, 0, 0],
+      [10, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [10, 0, 0, 0, 0],
+    ],
+    { you: { head: { x: 0, y: 4 } } },
+    [{ x: 0, y: 0 }]
+  )
+);
