@@ -14,10 +14,14 @@ function move(req) {
 
   const availableMoves = {};
 
+  let MovedToEat = false;
+  console.log(grid);
   // check if need food
   if (you.health < 30) {
+    MovedToEat = true;
     const moveToEat = eat({ grid, data: req.body, urgent: true }); // ea. {direction:UP, score: 1}
     availableMoves[moveToEat.direction] = moveToEat.score;
+    console.log(availableMoves);
   }
 
   // check if any snakes can be eaten close by
@@ -30,7 +34,7 @@ function move(req) {
   }
 
   // check if should be bulking up
-  if (you.length < 6) {
+  if (you.length < 6 && !MovedToEat) {
     const moveToEat = eat({ grid, data: req.body, urgent: true }); // ea. {direction:UP, score: 1}
     if (!availableMoves[moveToEat.direction]) {
       availableMoves[moveToEat.direction] = 0;
@@ -55,9 +59,9 @@ function move(req) {
     if (!availableMoves[moveToPerimeter.direction]) {
       availableMoves[moveToPerimeter.direction] = 0;
     }
-    availableMoves[moveToPerimeter.direction] += moveToEat.score;
+    availableMoves[moveToPerimeter.direction] += moveToPerimeter.score;
   }
-
+  console.log(availableMoves);
   const direction = Object.keys(availableMoves).sort(
     (a, b) => availableMoves[a] - availableMoves[b]
   )[0]; // returns highest scored direction

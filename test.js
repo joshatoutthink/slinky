@@ -1,4 +1,4 @@
 const { move } = require("./move.js");
 const testMove = require("./testMove.json");
 
-move(testMove);
+console.log(move(testMove));

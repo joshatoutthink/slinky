@@ -34,6 +34,8 @@ module.exports.sortByClosest = function sortByClosest(target, current) {
     return aTotal - bTotal;
   });
 };
-module.exports.getDistanceBetween = function getDistanceBetween(a, b) {
+function getDistanceBetween(a, b) {
   return Math.abs(a - b);
-};
+}
+
+module.exports.getDistanceBetween = getDistanceBetween;

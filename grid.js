@@ -42,6 +42,8 @@ function createGrid(data) {
 
   //plot food
   plot(grid, food, "FOOD");
+
+  return grid;
 }
 
 function plot(grid, entity, type, isSnake) {

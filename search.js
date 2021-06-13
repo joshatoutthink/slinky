@@ -11,7 +11,7 @@ const search = function search(grid, data, targetData) {
     head,
     sortByClosest(head, targetData)[0]
   );
-  return calcDir(head, coordinates);
+  return { direction: calcDir(head, coordinates), coordinates };
 }; //returns array of {dir, score} sorted by greatest to least.
 
 function calcDir({ sx, sy }, { x, y }) {
@@ -129,17 +129,5 @@ function getScores(maze) {
     }))
   );
 }
-console.log(
-  search(
-    [
-      [2, 0, 0, 0, 0],
-      [10, 0, 0, 0, 0],
-      [10, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [10, 0, 0, 0, 0],
-    ],
-    { you: { head: { x: 0, y: 4 } } },
-    [{ x: 0, y: 0 }]
-  )
-);
+
 module.exports.search = search;
