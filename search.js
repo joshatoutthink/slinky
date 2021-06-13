@@ -1,4 +1,5 @@
-const { sortByClosest } = require("./helpers");
+const { sortByClosest, getDistanceBetween } = require("./helpers");
+const { keys } = require("./grid");
 module.exports.search = function search(grid, data, targetData, targetKey) {
   let shortestPath = 9999;
   const {
@@ -6,28 +7,11 @@ module.exports.search = function search(grid, data, targetData, targetKey) {
     board,
     game,
   } = data;
-  const aStarGrid = createAStarGrid(grid);
-  let current = head; // todo this needs to be more dynamic
+  const cellTree = new Tree(head, grid);
   let closestTarget = sortByClosest(head, targetData)[0]; // this may need to change if no good path is found
 
-  const openSet = [current];
-  const closedSet = [];
-
-  while (openSet.length) {}
+  return cellTree.getPathsTo(closestTarget);
 }; //returns array of {dir, score} sorted by greatest to least.
-
-function createAStarGrid(grid) {
-  const g = new Array(grid.length);
-  for (let i = 0; i < g.length; i++) {
-    g.push([]);
-    for (let j = 0; j < grid[i].length; j++) {
-      const x = j;
-      const y = i;
-      const state = grid[i][j];
-      g[i][j] = new Cell(x, y);
-    }
-  }
-}
 
 class Tree {
   constructor(root, grid) {
@@ -38,7 +22,6 @@ class Tree {
   }
 
   createCells(grid) {
-    console.log(grid);
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
         const x = j;
@@ -82,17 +65,118 @@ class Tree {
     }
   }
 
-  search(target) {
-    //todo
+  getRootCell() {
+    return this.cells.find(({ x, y }) => {
+      return this.root.x == x && this.root.y == y;
+    });
+  }
+
+  getCell(sX, sY) {
+    return this.cells.find(({ x, y }) => {
+      return sX == x && sY == y;
+    });
+  }
+
+  getPathsTo(target) {
+    const start = this.getRootCell();
+    let current = start;
+
+    const cellsToCheck = [current];
+    const checkedCells = [];
+
+    while (cellsToCheck.length) {
+      //set baseline
+      let lowestF = 999;
+      let lowestCell = { x: 99, y: 99 };
+
+      // check which has the lowest f score.
+      cellsToCheck.forEach(({ x, y }) => {
+        //this might be done with a reduce
+        const cell = this.getCell(x, y);
+        if (cell.f < lowestF) {
+          lowestF = cell.f;
+          lowestCell = { x, y };
+        }
+      });
+
+      // if found target
+      if (sameCell(target, lowestCell)) {
+        const coordinates = retracePathToStart(lowestCell, start); //TODO
+        return calcDirection(start, coordinates);
+      }
+
+      // continue the search
+      current = lowestCell;
+      let currentCell = this.getCell(current);
+
+      // remove current from cells to check && add to checkedCells
+      checkedCells.push(current);
+      cellsToCheck = cellsToCheck.filter((cell) => sameCell(cell, current));
+
+      //using and old fashion for loop so we can break early
+      for (let i = 0; i < currentCell.neighbors.length; i++) {
+        const neighbor = currentCell.neighbors[i];
+        const neighborCell = this.getCell(neighbor);
+
+        // check if found target
+        if (sameCell(target, neighbor)) {
+          const coordinates = retracePathToStart(lowestCell, start); //TODO
+          return calcDirection(start, coordinates);
+        }
+
+        // if neighborCell is a valid space to move to && and we haven't already checked it (its in checked cells)
+        if (
+          neighborCell.state < keys.ENEMY_BODY &&
+          !inArray(checkedCells, neighbor)
+        ) {
+          // update distance traveled
+          const tempG = currentCell.g + 1;
+          let shortest = true;
+
+          if (inArray(cellsToCheck, neighbor)) {
+            if (tempG > neighborCell.g) {
+              shortest = false;
+            }
+          } else {
+            cellsToCheck.push(neighbor);
+          }
+          // update the cells score
+          if (shortest) {
+            neighborCell.updateScore(
+              tempG,
+              getDistanceBetween(neighbor, start)
+            );
+            neighborCell.setPrevious(current);
+          }
+        }
+      }
+    }
   }
 }
+
 class Cell {
   constructor(x, y, state, neighbors) {
     this.x = x;
     this.y = y;
     this.state = state;
     this.neighbors = neighbors;
+    this.g = 0; // distance from start
+    this.h = 0;
+    this.f = 0;
+    this.previous = null;
   }
+  updateScore(tempG, distanceToTarget) {
+    this.g = tempG;
+    this.h = distanceToTarget;
+    this.f = this.g + this.h;
+  }
+  setPrevious(coordinates) {
+    this.previous = coordinates; // {x,y}
+  }
+}
+
+function sameCell(a, b) {
+  return a.x === b.x && a.y === b.y;
 }
 
 console.log(

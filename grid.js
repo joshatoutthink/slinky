@@ -1,9 +1,10 @@
 const EMPTY = 0;
-const YOU_HEAD = 1;
-const YOU_BODY = 2;
-const ENEMY_BODY = 3;
-const ENEMY_HEAD = 4;
 const FOOD = 5;
+const KILL_ZONE = 2;
+const YOU_HEAD = 10;
+const YOU_BODY = 10;
+const ENEMY_BODY = 10;
+const ENEMY_HEAD = 10;
 
 const keys = {
   EMPTY,
@@ -12,6 +13,7 @@ const keys = {
   ENEMY_HEAD,
   ENEMY_BODY,
   FOOD,
+  KILL_ZONE,
 };
 
 function createGrid(data) {
