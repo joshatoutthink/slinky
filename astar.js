@@ -1,31 +1,6 @@
-const { sortByClosest, getDistanceBetween } = require("./helpers");
-const { keys } = require("./grid");
+const { keys } = require("./grid.js");
 
-const search = function search(grid, data, targetData) {
-  const {
-    you: { head },
-  } = data;
-
-  const coordinates = aStarSearch(
-    grid,
-    head,
-    sortByClosest(head, targetData)[0]
-  );
-  return calcDir(head, coordinates);
-}; //returns array of {dir, score} sorted by greatest to least.
-
-function calcDir({ sx, sy }, { x, y }) {
-  if (sx - 1 == x && sy == y) {
-    return "left";
-  } else if (sx + 1 == x && sy == y) {
-    return "right";
-  } else if (sx == x && sy + 1 == y) {
-    return "down";
-  }
-  return "up";
-}
-
-function aStarSearch(maze, start, end) {
+function search(maze, start, end) {
   const scores = getScores(maze);
 
   let openSet = [start];
@@ -138,8 +113,7 @@ console.log(
       [0, 0, 0, 0, 0],
       [10, 0, 0, 0, 0],
     ],
-    { you: { head: { x: 0, y: 4 } } },
-    [{ x: 0, y: 0 }]
+    { x: 0, y: 4 },
+    { x: 0, y: 0 }
   )
 );
-module.exports.search = search;

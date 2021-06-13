@@ -1,7 +1,6 @@
 const { sortByClosest, getDistanceBetween } = require("./helpers");
 const { keys } = require("./grid");
-
-const search = function search(grid, data, targetData) {
+module.exports.search = function search(grid, data, targetData) {
   const {
     you: { head },
   } = data;
@@ -138,8 +137,7 @@ console.log(
       [0, 0, 0, 0, 0],
       [10, 0, 0, 0, 0],
     ],
-    { you: { head: { x: 0, y: 4 } } },
-    [{ x: 0, y: 0 }]
+    { x: 0, y: 4 },
+    { x: 0, y: 0 }
   )
 );
-module.exports.search = search;
