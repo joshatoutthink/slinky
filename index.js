@@ -6,9 +6,9 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 
-app.get("/", slinky);
-app.post("/start", start);
-app.post("/move", (req, res) => {
+app.get("/slinky", slinky);
+app.post("/slinky/start", start);
+app.post("/slinky/move", (req, res) => {
   direction = move(req);
   res.status(200).json({
     move: direction,
