@@ -71,7 +71,7 @@ function move(req) {
   // )[0]; // returns highest scored direction
   let direction;
 
-  if (turn < 100 || you.health < 50) {
+  if (turn < 75 || you.health < 20) {
     const moved = eat({ grid, data: req.body, urgent: true });
     if (moved && moved.direction) {
       console.log("food");
