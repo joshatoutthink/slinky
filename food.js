@@ -1,9 +1,20 @@
-const { keys } = require("./grid");
+const { keys } = require("./keys");
 const { search } = require("./search");
+const { sortByClosest } = require("./helpers");
 function eat({ grid, data, urgent }) {
   // TODO: Later decide if the closest option is the best option
   // Maybe the direction is close to large snake.
-  const { direction, coordinates } = search(grid, data, data.board.food);
+  let move;
+  const sortedFood = sortByClosest(data.you.head, data.board.food);
+  for (let i = 0; i < data.board.food.length; i++) {
+    food = sortedFood[i];
+    move = search(grid, data, food, true);
+    if (move) return move;
+  }
+  if (!move) {
+    return { direction: null };
+  }
+  const { direction, coordinates } = move;
   const score = rateMove(coordinates);
   return { direction, score };
 }

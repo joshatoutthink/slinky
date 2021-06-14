@@ -1,4 +1,4 @@
-const { keys } = require("./grid");
+const { keys } = require("./keys");
 function moveAroundPerimeter(grid, data) {
   //todo
   return { up: 1 };

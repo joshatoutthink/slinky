@@ -1,28 +1,43 @@
-const { sortByClosest, getDistanceBetween } = require("./helpers");
-const { keys } = require("./grid");
+const { sortByClosest, getNeighbors } = require("./helpers");
+const { keys } = require("./keys");
 
-const search = function search(grid, data, targetData) {
+const search = function search(grid, data, targetData, single) {
   const {
     you: { head },
   } = data;
 
-  const coordinates = aStarSearch(
-    grid,
-    head,
-    sortByClosest(head, targetData)[0]
-  );
-  return { direction: calcDir(head, coordinates), coordinates };
+  const target = !single ? sortByClosest(head, targetData)[0] : targetData;
+  console.log("target", target);
+  console.log("head", head);
+  const coordinates = aStarSearch(grid, head, target);
+  if (coordinates == -1) {
+    return null;
+  }
+  console.log("coordinates", coordinates);
+
+  let direction = calcDir(head, coordinates);
+
+  if (!direction) {
+    direction = calcDir(head, target);
+  }
+  console.log(direction);
+  return { direction, coordinates };
 }; //returns array of {dir, score} sorted by greatest to least.
 
-function calcDir({ sx, sy }, { x, y }) {
-  if (sx - 1 == x && sy == y) {
-    return "left";
-  } else if (sx + 1 == x && sy == y) {
-    return "right";
-  } else if (sx == x && sy + 1 == y) {
+function calcDir({ x: sx, y: sy }, { x, y }) {
+  if (sx == x && sy + 1 == y) {
+    return "up";
+  }
+  if (sx == x && sy - 1 == y) {
     return "down";
   }
-  return "up";
+  if (sx - 1 == x && sy == y) {
+    return "left";
+  }
+  if (sx + 1 == x && sy == y) {
+    return "right";
+  }
+  console.log("no dir", { x: sx, y: sy }, { x, y });
 }
 
 function aStarSearch(maze, start, end) {
@@ -41,7 +56,10 @@ function aStarSearch(maze, start, end) {
       },
       { lowestCell: { x: 99, y: 99 }, lowest: 99 }
     );
-
+    if (lowestCell.x == end.x && lowestCell.y == end.y) {
+      console.log("HEHEHEHEHEHEHEEHe");
+      return end;
+    }
     openSet = [];
     closedSet.push(lowestCell);
     const current = lowestCell;
@@ -68,53 +86,20 @@ function aStarSearch(maze, start, end) {
 }
 
 function steps(v, t, { x, y }) {
+  console.log("steps", { x, y });
   const prev = v[y][x].previous;
+  if (t.x == x && t.y == y) {
+    return { x, y };
+  }
+  if (!prev) {
+    return t;
+  }
   if (t.x == prev.x && t.y == prev.y) {
-    console.log("finished", x, y);
+    // console.log("finished", x, y);
     return { x, y };
   } else {
     return steps(v, t, prev);
   }
-}
-
-function getNeighbors(maze, { x, y }) {
-  const neighbors = [];
-
-  if (
-    maze[y] &&
-    typeof maze[y][x - 1] == "number" &&
-    maze[y][x - 1] < keys.ENEMY_BODY
-  ) {
-    //left
-    neighbors.push({ x: x - 1, y });
-  }
-  if (
-    maze[y - 1] &&
-    typeof maze[y - 1][x] == "number" &&
-    maze[y - 1][x] < keys.ENEMY_BODY
-  ) {
-    //up
-
-    neighbors.push({ x, y: y - 1 });
-  }
-  if (
-    maze[y] &&
-    typeof maze[y][x + 1] == "number" &&
-    maze[y][x + 1] < keys.ENEMY_BODY
-  ) {
-    //right
-    neighbors.push({ x: x + 1, y });
-  }
-
-  if (
-    maze[y + 1] &&
-    typeof maze[y + 1][x] == "number" &&
-    maze[y + 1][x] < keys.ENEMY_BODY
-  ) {
-    //down
-    neighbors.push({ x, y: y + 1 });
-  }
-  return neighbors;
 }
 
 function getScores(maze) {
@@ -131,3 +116,8 @@ function getScores(maze) {
 }
 
 module.exports.search = search;
+function validMove(maze, x, y) {
+  return x < maze.length - 1 && x >= 0 && y < maze.length - 1 && y >= 0;
+}
+
+module.exports.calcDir = calcDir;

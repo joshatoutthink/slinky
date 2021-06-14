@@ -1,4 +1,4 @@
-const { keys } = require("./grid");
+const { keys } = require("./keys");
 
 function smallSnakesNear(grid, data) {
   //todo

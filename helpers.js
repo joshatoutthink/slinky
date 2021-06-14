@@ -1,3 +1,4 @@
+const { keys } = require("./keys");
 //HELPERS
 module.exports.getMoves = function getMoves(moves, coord) {
   return moves.reduce((coords, move) => {
@@ -39,3 +40,45 @@ function getDistanceBetween(a, b) {
 }
 
 module.exports.getDistanceBetween = getDistanceBetween;
+
+function getNeighbors(maze, { x, y }) {
+  const neighbors = [];
+
+  if (
+    maze[y] &&
+    typeof maze[y][x - 1] == "number" &&
+    maze[y][x - 1] < keys.ENEMY_BODY
+  ) {
+    //left
+    neighbors.push({ x: x - 1, y });
+  }
+  if (
+    maze[y + 1] &&
+    typeof maze[y + 1][x] == "number" &&
+    maze[y + 1][x] < keys.ENEMY_BODY
+  ) {
+    //up
+
+    neighbors.push({ x, y: y + 1 });
+  }
+  if (
+    maze[y] &&
+    typeof maze[y][x + 1] == "number" &&
+    maze[y][x + 1] < keys.ENEMY_BODY
+  ) {
+    //right
+    neighbors.push({ x: x + 1, y });
+  }
+
+  if (
+    maze[y - 1] &&
+    typeof maze[y - 1][x] == "number" &&
+    maze[y - 1][x] < keys.ENEMY_BODY
+  ) {
+    //down
+    neighbors.push({ x, y: y - 1 });
+  }
+  return neighbors;
+}
+
+module.exports.getNeighbors = getNeighbors;
