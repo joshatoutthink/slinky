@@ -1,0 +1,289 @@
+{
+  //Move around a snake to get food.
+  "aroundObjectToFood": {},
+  // Right Next to Food
+  "nextToFood": {
+    "game": {
+      "id": "549185",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 1, "y": 8 },
+        { "x": 1, "y": 9 },
+        { "x": 0, "y": 9 }
+      ],
+      "head": { "x": 1, "y": 8 },
+      "length": 3
+    },
+    "board": {
+      "food": [{ "x": 0, "y": 8 }],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 1, "y": 8 },
+            { "x": 1, "y": 9 },
+            { "x": 0, "y": 9 }
+          ],
+          "head": { "x": 1, "y": 8 },
+          "length": 3
+        }
+      ]
+    }
+  },
+  // Closest food Option is not Possible
+  "noPathToFood": {
+    "game": {
+      "id": "947027",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 20,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 5, "y": 6 },
+        { "x": 5, "y": 7 },
+        { "x": 5, "y": 8 },
+        { "x": 5, "y": 9 },
+        { "x": 4, "y": 9 }
+      ],
+      "head": { "x": 5, "y": 6 },
+      "length": 5
+    },
+    "board": {
+      "food": [{ "x": 5, "y": 4 }],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 20,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 5, "y": 6 },
+            { "x": 5, "y": 7 },
+            { "x": 5, "y": 8 },
+            { "x": 5, "y": 9 },
+            { "x": 4, "y": 9 }
+          ],
+          "head": { "x": 5, "y": 6 },
+          "length": 5
+        },
+        {
+          "health": 100,
+          "id": "#FF397d",
+          "name": "#FF397d",
+          "body": [
+            { "x": 3, "y": 4 },
+            { "x": 4, "y": 4 },
+            { "x": 4, "y": 3 },
+            { "x": 5, "y": 3 },
+            { "x": 6, "y": 3 },
+            { "x": 6, "y": 4 },
+            { "x": 6, "y": 5 },
+            { "x": 5, "y": 5 },
+            { "x": 4, "y": 5 },
+            { "x": 4, "y": 6 },
+            { "x": 3, "y": 6 },
+            { "x": 2, "y": 6 }
+          ],
+          "head": { "x": 3, "y": 4 },
+          "length": 12
+        }
+      ]
+    }
+  },
+  // If Eats Food will Die
+  "closestFoodNotOptimal": {
+    "game": {
+      "id": "752976",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 20,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 3, "y": 9 },
+        { "x": 3, "y": 10 },
+        { "x": 4, "y": 10 },
+        { "x": 5, "y": 10 },
+        { "x": 5, "y": 9 },
+        { "x": 5, "y": 8 },
+        { "x": 4, "y": 8 },
+        { "x": 3, "y": 8 },
+        { "x": 1, "y": 8 },
+        { "x": 2, "y": 8 }
+      ],
+      "head": { "x": 3, "y": 9 },
+      "length": 10
+    },
+    "board": {
+      "food": [
+        { "x": 4, "y": 9 },
+        { "x": 0, "y": 9 }
+      ],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 20,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 3, "y": 9 },
+            { "x": 3, "y": 10 },
+            { "x": 4, "y": 10 },
+            { "x": 5, "y": 10 },
+            { "x": 5, "y": 9 },
+            { "x": 5, "y": 8 },
+            { "x": 4, "y": 8 },
+            { "x": 3, "y": 8 },
+            { "x": 1, "y": 8 },
+            { "x": 2, "y": 8 }
+          ],
+          "head": { "x": 3, "y": 9 },
+          "length": 10
+        },
+        {
+          "health": 100,
+          "id": "#FF56fa",
+          "name": "#FF56fa",
+          "body": [],
+          "length": 0
+        }
+      ]
+    }
+  },
+
+  //Between 2 food choose the closer
+  "chooseClosestFood": {
+    "game": {
+      "id": "62673",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 5, "y": 5 },
+        { "x": 5, "y": 4 },
+        { "x": 5, "y": 3 },
+        { "x": 5, "y": 2 },
+        { "x": 5, "y": 1 },
+        { "x": 5, "y": 0 }
+      ],
+      "head": { "x": 5, "y": 5 },
+      "length": 6
+    },
+    "board": {
+      "food": [
+        { "x": 2, "y": 5 },
+        { "x": 10, "y": 5 }
+      ],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 5, "y": 5 },
+            { "x": 5, "y": 4 },
+            { "x": 5, "y": 3 },
+            { "x": 5, "y": 2 },
+            { "x": 5, "y": 1 },
+            { "x": 5, "y": 0 }
+          ],
+          "head": { "x": 5, "y": 5 },
+          "length": 6
+        }
+      ]
+    }
+  },
+
+  // Closest Food is not the closest path
+  "chooseShortestFoodPath": {
+    "game": {
+      "id": "62673",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 5, "y": 5 },
+        { "x": 5, "y": 4 },
+        { "x": 5, "y": 3 },
+        { "x": 5, "y": 2 },
+        { "x": 5, "y": 1 },
+        { "x": 5, "y": 0 }
+      ],
+      "head": { "x": 5, "y": 5 },
+      "length": 6
+    },
+    "board": {
+      "food": [
+        { "x": 2, "y": 5 },
+        { "x": 10, "y": 5 }
+      ],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 5, "y": 5 },
+            { "x": 5, "y": 4 },
+            { "x": 5, "y": 3 },
+            { "x": 5, "y": 2 },
+            { "x": 5, "y": 1 },
+            { "x": 5, "y": 0 }
+          ],
+          "head": { "x": 5, "y": 5 },
+          "length": 6
+        },
+        {
+          "health": 100,
+          "id": "#FF19be",
+          "name": "#FF19be",
+          "body": [
+            { "x": 1, "y": 3 },
+            { "x": 1, "y": 4 },
+            { "x": 2, "y": 4 },
+            { "x": 3, "y": 4 },
+            { "x": 3, "y": 5 },
+            { "x": 3, "y": 6 },
+            { "x": 3, "y": 7 }
+          ],
+          "head": { "x": 1, "y": 3 },
+          "length": 7
+        }
+      ]
+    }
+  }
+}

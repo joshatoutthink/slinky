@@ -97,13 +97,14 @@ function toTail(grid, data) {
   const tail = data.you.body[data.you.body.length - 1];
   const beforeTail = data.you.body[data.you.body.length - 2];
   const afterTail = getDir(tail, beforeTail);
-  return search(grid, data, afterTail, true)?.direction || null;
+  return search(grid, data, afterTail, true)?.direction || null; // TODO new api for search(grid, from, to); from will be the head, to will be afterTail
 }
 
 function avoidWalls(grid, data) {
   const head = data.you.head;
   const viableMoves = getNeighbors(grid, head);
   for (let i = 0; i < viableMoves.length; i++) {
+    // TODO new api for search(grid, from, to); from will be the head, to will be viableMoves[i]
     if ((direction = search(grid, data, viableMoves[i], true))) {
       return direction;
     }

@@ -1,0 +1,211 @@
+{
+  // Headed Straight for a wall OH NO!
+  "simpleAvoidWall": {
+    "game": {
+      "id": "592206",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 0, "y": 5 },
+        { "x": 1, "y": 5 },
+        { "x": 2, "y": 5 },
+        { "x": 3, "y": 5 },
+        { "x": 4, "y": 5 }
+      ],
+      "head": { "x": 0, "y": 5 },
+      "length": 5
+    },
+    "board": {
+      "food": [],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 0, "y": 5 },
+            { "x": 1, "y": 5 },
+            { "x": 2, "y": 5 },
+            { "x": 3, "y": 5 },
+            { "x": 4, "y": 5 }
+          ],
+          "head": { "x": 0, "y": 5 },
+          "length": 5
+        }
+      ]
+    }
+  },
+
+  //A more difficult scenario. Only one way out
+  "avoidWalls_1": {
+    "game": {
+      "id": "684303",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 10, "y": 7 },
+        { "x": 9, "y": 7 },
+        { "x": 8, "y": 7 },
+        { "x": 8, "y": 8 },
+        { "x": 9, "y": 8 },
+        { "x": 10, "y": 8 },
+        { "x": 10, "y": 9 }
+      ],
+      "head": { "x": 10, "y": 7 },
+      "length": 7
+    },
+    "board": {
+      "food": [],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 10, "y": 7 },
+            { "x": 9, "y": 7 },
+            { "x": 8, "y": 7 },
+            { "x": 8, "y": 8 },
+            { "x": 9, "y": 8 },
+            { "x": 10, "y": 8 },
+            { "x": 10, "y": 9 }
+          ],
+          "head": { "x": 10, "y": 7 },
+          "length": 7
+        }
+      ]
+    }
+  },
+
+  // Find Food But avoid self and walls
+  "avoidSelfAndStillGetFood": {
+    "game": {
+      "id": "684303",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 9, "y": 6 },
+        { "x": 9, "y": 5 },
+        { "x": 8, "y": 5 },
+        { "x": 8, "y": 6 },
+        { "x": 8, "y": 7 },
+        { "x": 8, "y": 8 },
+        { "x": 9, "y": 8 },
+        { "x": 10, "y": 8 },
+        { "x": 10, "y": 9 }
+      ],
+      "head": { "x": 9, "y": 6 },
+      "length": 9
+    },
+    "board": {
+      "food": [{ "x": 9, "y": 9 }],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 9, "y": 6 },
+            { "x": 9, "y": 5 },
+            { "x": 8, "y": 5 },
+            { "x": 8, "y": 6 },
+            { "x": 8, "y": 7 },
+            { "x": 8, "y": 8 },
+            { "x": 9, "y": 8 },
+            { "x": 10, "y": 8 },
+            { "x": 10, "y": 9 }
+          ],
+          "head": { "x": 9, "y": 6 },
+          "length": 9
+        }
+      ]
+    }
+  },
+
+  // avoid self. Dont Coil to Tightly,
+  "dontCoilToTightly": {
+    "game": {
+      "id": "862299",
+      "ruleset": { "name": "standard", "version": "v.1.2.3" },
+      "timeout": 500
+    },
+    "turn": 200,
+    "you": {
+      "health": 100,
+      "id": "you",
+      "name": "#22aa34",
+      "body": [
+        { "x": 8, "y": 4 },
+        { "x": 7, "y": 6 },
+        { "x": 7, "y": 4 },
+        { "x": 6, "y": 4 },
+        { "x": 5, "y": 4 },
+        { "x": 5, "y": 3 },
+        { "x": 6, "y": 3 },
+        { "x": 7, "y": 3 },
+        { "x": 8, "y": 3 },
+        { "x": 9, "y": 3 },
+        { "x": 9, "y": 4 },
+        { "x": 8, "y": 6 },
+        { "x": 9, "y": 6 },
+        { "x": 9, "y": 5 }
+      ],
+      "head": { "x": 8, "y": 4 },
+      "length": 14
+    },
+    "board": {
+      "food": [],
+      "height": 11,
+      "width": 11,
+      "snakes": [
+        {
+          "health": 100,
+          "id": "you",
+          "name": "#22aa34",
+          "body": [
+            { "x": 8, "y": 4 },
+            { "x": 7, "y": 6 },
+            { "x": 7, "y": 4 },
+            { "x": 6, "y": 4 },
+            { "x": 5, "y": 4 },
+            { "x": 5, "y": 3 },
+            { "x": 6, "y": 3 },
+            { "x": 7, "y": 3 },
+            { "x": 8, "y": 3 },
+            { "x": 9, "y": 3 },
+            { "x": 9, "y": 4 },
+            { "x": 8, "y": 6 },
+            { "x": 9, "y": 6 },
+            { "x": 9, "y": 5 }
+          ],
+          "head": { "x": 8, "y": 4 },
+          "length": 14
+        }
+      ]
+    }
+  }
+}
