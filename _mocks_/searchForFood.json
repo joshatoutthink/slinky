@@ -1,7 +1,6 @@
 {
-  //Move around a snake to get food.
   "aroundObjectToFood": {},
-  // Right Next to Food
+
   "nextToFood": {
     "game": {
       "id": "549185",
@@ -41,7 +40,7 @@
       ]
     }
   },
-  // Closest food Option is not Possible
+
   "noPathToFood": {
     "game": {
       "id": "947027",
@@ -106,7 +105,7 @@
       ]
     }
   },
-  // If Eats Food will Die
+
   "closestFoodNotOptimal": {
     "game": {
       "id": "752976",
@@ -171,7 +170,6 @@
     }
   },
 
-  //Between 2 food choose the closer
   "chooseClosestFood": {
     "game": {
       "id": "62673",
@@ -221,7 +219,6 @@
     }
   },
 
-  // Closest Food is not the closest path
   "chooseShortestFoodPath": {
     "game": {
       "id": "62673",

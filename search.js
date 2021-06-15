@@ -57,11 +57,16 @@ function aStarSearch(maze, start, end) {
       },
       { lowestCell: { x: 99, y: 99 }, lowest: 99 }
     );
+
     if (lowestCell.x == end.x && lowestCell.y == end.y) {
       console.log("HEHEHEHEHEHEHEEHe");
       return end;
     }
-    openSet = [];
+
+    openSet = openSet.filter(({ x, y }) => {
+      return x != lowestCell.x || y !== lowestCell.y;
+    });
+
     closedSet.push(lowestCell);
     const current = lowestCell;
 
@@ -75,6 +80,7 @@ function aStarSearch(maze, start, end) {
       }
       if (!closedSet.some((p) => n.x == p.x && p.y == n.y)) {
         openSet.push(n);
+
         const cScore = scores[current.y][current.x];
         scores[n.y][n.x].g = cScore.g + 1;
         scores[n.y][n.x].h = Math.abs(end.x - n.x) + Math.abs(end.y - n.y);

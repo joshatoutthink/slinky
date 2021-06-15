@@ -91,7 +91,7 @@ function move(req) {
   return direction;
 }
 
-module.exports = { move };
+module.exports = { move, avoidWalls };
 
 function toTail(grid, data) {
   const tail = data.you.body[data.you.body.length - 1];

@@ -1,5 +1,4 @@
 {
-  // Headed Straight for a wall OH NO!
   "simpleAvoidWall": {
     "game": {
       "id": "592206",
@@ -44,7 +43,6 @@
     }
   },
 
-  //A more difficult scenario. Only one way out
   "avoidWalls_1": {
     "game": {
       "id": "684303",
@@ -93,7 +91,6 @@
     }
   },
 
-  // Find Food But avoid self and walls
   "avoidSelfAndStillGetFood": {
     "game": {
       "id": "684303",
@@ -146,7 +143,6 @@
     }
   },
 
-  // avoid self. Dont Coil to Tightly,
   "dontCoilToTightly": {
     "game": {
       "id": "862299",
