@@ -20,3 +20,15 @@ function avoidWalls_1() {
   );
 }
 avoidWalls_1();
+
+function dontCoilToTightly() {
+  const data = mocks.dontCoilToTightly;
+  const grid = createGrid(data);
+
+  console.log(
+    "doesnt coil to tight:",
+    avoidWalls(grid, data).direction == "up",
+    move({ body: data }) == "up"
+  );
+}
+dontCoilToTightly();
