@@ -1,0 +1,1 @@
+const { eat } = require("./../food");

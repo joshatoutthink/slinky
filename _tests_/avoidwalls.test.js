@@ -1,0 +1,1 @@
+const { move } = require("./../move");
