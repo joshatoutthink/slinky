@@ -5,7 +5,7 @@
 ### URGENT
 
 - [ ] Download Third Party App for Creating TestCases
-- [ ] Create Mock Data for Testing Search, Eat, and Avoid Walls
+- [x] Create Mock Data for Testing Search, Eat, and Avoid Walls
 - [ ] Create Tests for Search
 - [ ] Create Tests for Eat
 - [ ] Create Tests for Avoid Walls
