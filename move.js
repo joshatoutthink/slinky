@@ -35,6 +35,8 @@ function move(req) {
     direction = toTail(grid, req.body);
     if (direction) {
       console.log("moving towards tail");
+    } else {
+      console.log("no path to tail");
     }
   }
 
@@ -61,11 +63,23 @@ function toTail(grid, data) {
   const tail = data.you.body[data.you.body.length - 1];
   const beforeTail = data.you.body[data.you.body.length - 2];
   const afterTail = getDir(tail, beforeTail);
-  const moveBehind = search(grid, data.you.head, afterTail)?.direction || null;
-  const move = moveBehind
-    ? moveBehind
-    : search(grid, data.you.head, tail)?.direction || null;
-  return move;
+  console.log({ beforeTail, tail, afterTail });
+  if (
+    afterTail.x > grid.length ||
+    afterTail.y > grid.length ||
+    afterTail.x < 0 ||
+    afterTail.y < 0
+  ) {
+    const move = search(grid, data.you.head, tail);
+    if (move && move.direction) {
+      return move.direction;
+    }
+  } else {
+    const move = search(grid, data.you.head, afterTail);
+    if (move && move.direction) {
+      return move.direction;
+    }
+  }
 }
 
 function avoidWalls(grid, data) {
