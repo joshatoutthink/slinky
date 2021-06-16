@@ -1,7 +1,6 @@
 const { sortByClosest, getNeighbors } = require("./helpers");
 const { keys } = require("./keys");
 
-// TODO new api for search(grid, from, to);
 const search = function search(grid, from, to) {
   console.log("target", to);
   console.log("head", from);
