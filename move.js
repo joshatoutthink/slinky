@@ -16,78 +16,42 @@ function move(req) {
   const { game, turn, board, you } = req.body;
   const grid = createGrid(req.body);
 
-  // const availableMoves = {};
-
-  // let MovedToEat = false;
-  // console.log(grid);
-  // // check if need food
-  // if (you.health < 30) {
-  //   MovedToEat = true;
-  //   const moveToEat = eat({ grid, data: req.body, urgent: true }); // ea. {direction:UP, score: 1}
-  //   availableMoves[moveToEat.direction] = moveToEat.score;
-  //   console.log(availableMoves);
-  // }
-
-  // // check if any snakes can be eaten close by
-  // if (smallSnakesNear(grid, req.body)) {
-  //   const moveToHunt = hunt(grid, req.body); // ea. {direction:UP, score: 1}
-  //   if (!availableMoves[moveToHunt.direction]) {
-  //     availableMoves[moveToHunt.direction] = 0;
-  //   }
-  //   availableMoves[moveToHunt.direction] += moveToHunt.score;
-  // }
-
-  // // check if should be bulking up
-  // if (you.length < 6 && !MovedToEat) {
-  //   const moveToEat = eat({ grid, data: req.body, urgent: true }); // ea. {direction:UP, score: 1}
-  //   if (!availableMoves[moveToEat.direction]) {
-  //     availableMoves[moveToEat.direction] = 0;
-  //   }
-  //   availableMoves[moveToEat.direction] += moveToEat.score;
-  // }
-
-  // //todo // check if easy to eat / trap snake
-
-  // // check for large snakes in area
-  // if (largeSnakeAround(grid, req.body)) {
-  //   const moveToAvoid = avoidLargeSnakes(grid, req.body);
-  //   if (!availableMoves[moveToAvoid.direction]) {
-  //     availableMoves[moveToAvoid.direction] = 0;
-  //   }
-  //   availableMoves[moveToAvoid.direction] += moveToEat.score;
-  // }
-
-  // // circle arena 2 in
-  // {
-  //   const moveToPerimeter = moveAroundPerimeter(grid, req.body, 2);
-  //   if (!availableMoves[moveToPerimeter.direction]) {
-  //     availableMoves[moveToPerimeter.direction] = 0;
-  //   }
-  //   availableMoves[moveToPerimeter.direction] += moveToPerimeter.score;
-  // }
-  // console.log(availableMoves);
-  // const direction = Object.keys(availableMoves).sort(
-  //   (a, b) => availableMoves[a] - availableMoves[b]
-  // )[0]; // returns highest scored direction
   let direction;
 
+  // GET BIG AND STRONG
   if (turn < 75 || you.health < 20) {
     const moved = eat({ grid, data: req.body, urgent: true });
     if (moved && moved.direction) {
-      console.log("food");
+      console.log("Getting some Food food");
       direction = moved.direction;
     }
   }
+
+  // CHECK FOR SMALL SNAKES
+  // TODO
+
+  //PROTECT SELF BY CHASING TAIL
   if (!direction) {
-    console.log("to tail");
     direction = toTail(grid, req.body);
-  }
-  if (!direction) {
-    console.log("walls");
-    direction = avoidWalls(grid, req.body).direction;
+    if (direction) {
+      console.log("moving towards tail");
+    }
   }
 
-  console.log(direction);
+  // CANT FIND TAIL JUST STAY ALIVE
+  if (!direction) {
+    const move = avoidWalls(grid, req.body);
+    direction = move && move.direction;
+
+    if (direction) {
+      console.log("Just trying to stay alive");
+    } else {
+      console.log("you lost");
+      return "down";
+    }
+  }
+
+  console.log(direction); // ->
   return direction;
 }
 
@@ -97,7 +61,11 @@ function toTail(grid, data) {
   const tail = data.you.body[data.you.body.length - 1];
   const beforeTail = data.you.body[data.you.body.length - 2];
   const afterTail = getDir(tail, beforeTail);
-  return search(grid, data.you.head, afterTail)?.direction || null;
+  const moveBehind = search(grid, data.you.head, afterTail)?.direction || null;
+  const move = moveBehind
+    ? moveBehind
+    : search(grid, data.you.head, tail)?.direction || null;
+  return move;
 }
 
 function avoidWalls(grid, data) {
@@ -105,6 +73,8 @@ function avoidWalls(grid, data) {
   const viableMoves = getNeighbors(grid, head);
   for (let i = 0; i < viableMoves.length; i++) {
     let direction;
+    // TODO:
+    // refactor this to just check for most available space
     if ((direction = search(grid, data.you.head, viableMoves[i]))) {
       return direction;
     }

@@ -15,10 +15,15 @@ app.post("/slinky/move", (req, res) => {
   });
 });
 app.post("/end", end);
-app.listen(PORT);
-console.log(`go to http://localhost:${PORT}`);
 
-function slinky(req, res) {
+app.listen(PORT);
+
+console.log(
+  "\x1b[1;48;2;0;100;255m%s\x1b[0m", //makes a bold font and blue background
+  `go to http://localhost:${PORT}`
+);
+
+function slinky(_, res) {
   res.status(200).json({
     apiversion: "1",
     author: "joshatoutthink",
