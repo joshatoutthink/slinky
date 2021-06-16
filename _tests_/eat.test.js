@@ -1,5 +1,4 @@
 const { eat } = require("./../food");
-const { search } = require("./../search");
 
 const mocks = require("../_mocks_/searchForFood.json");
 const mocksStayAlive = require("../_mocks_/stayAlive.json");

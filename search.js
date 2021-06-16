@@ -2,24 +2,19 @@ const { sortByClosest, getNeighbors } = require("./helpers");
 const { keys } = require("./keys");
 
 // TODO new api for search(grid, from, to);
-const search = function search(grid, data, targetData, single = false) {
-  const {
-    you: { head },
-  } = data;
-
-  const target = !single ? sortByClosest(head, targetData)[0] : targetData;
-  console.log("target", target);
-  console.log("head", head);
-  const coordinates = aStarSearch(grid, head, target);
+const search = function search(grid, from, to) {
+  console.log("target", to);
+  console.log("head", from);
+  const coordinates = aStarSearch(grid, from, to);
   if (coordinates == -1) {
     return null;
   }
   console.log("coordinates", coordinates);
 
-  let direction = calcDir(head, coordinates);
+  let direction = calcDir(from, coordinates);
 
   if (!direction) {
-    direction = calcDir(head, target);
+    direction = calcDir(from, to);
   }
   console.log(direction);
   return { direction, coordinates };
