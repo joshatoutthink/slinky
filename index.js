@@ -33,6 +33,7 @@ function start(_, res) {
   console.log("GAME STARTING");
   res.status(200).send("ok");
 }
-function end() {
+function end(_, res) {
   console.log("GAME ENDED \n \n");
+  res.status(200).send("ok");
 }
