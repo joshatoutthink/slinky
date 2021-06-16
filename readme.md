@@ -9,7 +9,7 @@
 - [x] Create Tests for Search
 - [x] Create Tests for Eat
 - [x] Create Tests for Avoid Walls
-- [ ] Simplify Search Function
+- [x] Simplify Search Function
 
 ### LATER
 

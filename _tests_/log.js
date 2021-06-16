@@ -21,3 +21,8 @@ const style = (status) =>
   reset;
 
 module.exports = { test };
+
+// * THIS ALSO WORKS  R;G;B;
+// 38 is foreground
+// 48 is background
+// ? console.log(pre + "[38;2;255;0;0m%s" + reset, "test");
